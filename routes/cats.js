@@ -1,48 +1,80 @@
 const express = require("express");
+const { rawListeners } = require("../models/cat");
+const Cat = require("../models/cat");
 const router = express.Router();
 
-let catsArray = [
-    {id: 1, name: "Cat_1", color: "Brown"},
-    {id: 2, name: "Cat_2", color: "White & Black"},
-    {id: 3, name: "Cat_3", color: "White"},
-    {id: 4, name: "Cat_4", color: "Brown & White"},
-];
 
-router.get("/", (req, res) => {
-    return res.send(catsArray);
+router.get("/", async (req, res) => {
+    try{
+        let cats = await Cat.find().sort({name : "asc"});
+        return res.send(cats);
+    }
+    catch(err){
+        return res.status(500).send("Error :", err.message);
+    }
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
     let requestedID = req.params.id;
-    let cat = catsArray.find(cat => cat.id == requestedID);
+    let cat = await Cat.findById(requestedID);
     if(!cat) {
         return res.status(404).send("The cat you are looking for does not exist");
     }
     return res.send(cat);
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
     let requestedID = req.params.id;
-    let cat = catsArray.find(cat => cat.id == requestedID);
+    let cat = await Cat.findById(requestedID);
+
     if(!cat) {
         return res.status(404).send("The cat you are looking for does not exist");
     }
-    cat.name = req.body.name;
-    cat.color = req.body.color;
-    return res.send(cat);
+    
+    cat.set({
+        name: req.body.name,
+        gender: req.body.gender,
+        description: req.body.description,
+        likeCount: req.body.likeCount,
+        imageUrl: req.body.imageUrl
+    });
+    try{
+        cat = await cat.save()
+        return res.send(cat);
+    }
+    catch(err){
+        return res.status(500).send("Error :", err.message);
+    }
 });
 
-router.post("/", (req, res) => {
-    if(!req.body.name || !req.body.color) {
-        return res.status(400).send("Bad Request");
+router.post("/", async (req, res) => {
+    if(!req.body.name) {
+        return res.status(400).send("Cat's name can not be empty.");
     }
-    let newCat = {
-        id : catsArray.length + 1,
+    else if(req.body.name.length<3 || req.body.name.length>20){
+        return res.status(400).send("Cat's name can not be less than 3 letters or greater than 20 letters.");
+    }
+    else if(!req.body.gender){
+        return res.status(400).send("Cat's gender can not be empty.");
+    }
+    else if(req.body.description.length>200){
+        return res.status(400).send("Cat's description can not greater than 200 letters.");
+    }
+    let newCat = new Cat({
         name : req.body.name,
-        color : req.body.color
-    };
-    catsArray.push(newCat);
-    res.send(newCat);
+        gender : req.body.gender,
+        description : req.body.description,
+        likeCount : req.body.likeCount,
+        imageUrl : req.body.imageUrl
+    });
+    try {
+        newCat = await newCat.save();
+        return res.send(newCat);
+    }
+    catch(err){
+        return res.status(500).send("")
+    }
+    
 });
 
 router.delete("/:id", (req, res) => {
