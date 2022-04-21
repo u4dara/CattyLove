@@ -8,7 +8,7 @@ mongoose.connect("mongodb://localhost/cattylovedb")
 .then(() => console.log("Connected to db Successfully..."))
 .catch((err) => console.log("Error connecting to the db :", err));
 
-const Port = 3000;
+const Port = 5000;
 
 app.use(express.json());
 app.use('/', home);
