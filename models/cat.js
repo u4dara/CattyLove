@@ -12,6 +12,11 @@ const catSchema = new mongoose.Schema({
         required : true,
         enum : ["Male", "Female"]
     },
+    age : {
+        type : Number,
+        required : true
+    },
+    color : String,
     description : {
         type : String,
         maxlength : 200

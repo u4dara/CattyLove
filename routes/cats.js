@@ -63,6 +63,8 @@ router.post("/", async (req, res) => {
     let newCat = new Cat({
         name : req.body.name,
         gender : req.body.gender,
+        age : req.body.age,
+        color : req.body.color,
         description : req.body.description,
         likeCount : req.body.likeCount,
         imageUrl : req.body.imageUrl
