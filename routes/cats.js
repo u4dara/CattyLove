@@ -23,6 +23,8 @@ router.get("/:id", async (req, res) => {
     return res.send(cat);
 });
 
+
+
 router.put("/:id", async (req, res) => {
     let requestedID = req.params.id;
     let cat = await Cat.findById(requestedID);
@@ -32,11 +34,7 @@ router.put("/:id", async (req, res) => {
     }
     
     cat.set({
-        name: req.body.name,
-        gender: req.body.gender,
-        description: req.body.description,
-        likeCount: req.body.likeCount,
-        imageUrl: req.body.imageUrl
+        likeCount: req.body.likeCount
     });
     try{
         cat = await cat.save()
