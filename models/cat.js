@@ -22,6 +22,7 @@ const catSchema = new mongoose.Schema({
         maxlength : 200
     },
     likeCount : Number,
+    unlikeCount : Number,
     imageUrl : {
         type : String,
         default : "https://t3.ftcdn.net/jpg/04/72/65/40/360_F_472654072_OcOyni2TGUOiClohAhzQBuwPguXxR7Eb.jpg"
